@@ -66,3 +66,22 @@ class UserProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE)
+
+    # Optional: you might have publication_year or other fields
+    publication_year = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        permissions = [
+            ("can_add_book", "Can add a book"),
+            ("can_change_book", "Can change a book"),
+            ("can_delete_book", "Can delete a book"),
+        ]

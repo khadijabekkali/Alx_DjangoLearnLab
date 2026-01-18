@@ -22,3 +22,14 @@ urlpatterns += [
     path('librarian-role/', views.librarian_view, name='librarian_view'),
     path('member-role/', views.member_view, name='member_view'),
 ]
+
+
+
+from django.urls import path
+from . import views
+
+urlpatterns += [
+    path('book/add/', views.add_book, name='add_book'),
+    path('book/<int:pk>/edit/', views.edit_book, name='edit_book'),
+    path('book/<int:pk>/delete/', views.delete_book, name='delete_book'),
+]
