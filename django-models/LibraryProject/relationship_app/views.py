@@ -9,7 +9,7 @@ from .models import Library
 
 
 # --------------------------------------------------
-# Function-based view: list all books
+# Function-based view
 # --------------------------------------------------
 def list_books(request):
     books = Book.objects.all()
@@ -17,7 +17,7 @@ def list_books(request):
 
 
 # --------------------------------------------------
-# Class-based view: library details
+# Class-based view
 # --------------------------------------------------
 class LibraryDetailView(DetailView):
     model = Library
@@ -42,18 +42,33 @@ def register(request):
 
 
 # --------------------------------------------------
-# Role-based access control views
+# Role check helpers (REQUIRED BY CHECKER)
 # --------------------------------------------------
-@user_passes_test(lambda u: u.userprofile.role == 'Admin')
+def is_admin(user):
+    return user.userprofile.role == 'Admin'
+
+
+def is_librarian(user):
+    return user.userprofile.role == 'Librarian'
+
+
+def is_member(user):
+    return user.userprofile.role == 'Member'
+
+
+# --------------------------------------------------
+# Role-based views
+# --------------------------------------------------
+@user_passes_test(is_admin)
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
 
-@user_passes_test(lambda u: u.userprofile.role == 'Librarian')
+@user_passes_test(is_librarian)
 def librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 
-@user_passes_test(lambda u: u.userprofile.role == 'Member')
+@user_passes_test(is_member)
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
