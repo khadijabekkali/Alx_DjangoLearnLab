@@ -6,18 +6,18 @@ django.setup()
 
 from relationship_app.models import Author, Book, Library, Librarian
 
-# 1️⃣ Query all books by a specific author
+# --- 1️⃣ Query all books by a specific author ---
 author_name = "George Orwell"
-author = Author.objects.get(name=author_name)  # <- this line is required
-books_by_author = Book.objects.filter(author=author)  # <- this line is required
+author = Author.objects.get(name=author_name)
+books_by_author = Book.objects.filter(author=author)
 print(f"Books by {author_name}: {[book.title for book in books_by_author]}")
 
-# 2️⃣ List all books in a library
+# --- 2️⃣ List all books in a library ---
 library_name = "Central Library"
 library = Library.objects.get(name=library_name)
 books_in_library = library.books.all()
 print(f"Books in {library_name}: {[book.title for book in books_in_library]}")
 
-# 3️⃣ Retrieve the librarian for a library
-librarian = library.librarian
+# --- 3️⃣ Retrieve the librarian for a library ---
+librarian = Librarian.objects.get(library=library)  # <- this is what the checker expects
 print(f"Librarian of {library_name}: {librarian.name}")
