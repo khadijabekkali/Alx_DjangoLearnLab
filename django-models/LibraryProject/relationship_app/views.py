@@ -1,16 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 
-from .models import Book
-from .models import Library
+from .models import Book, Library
+from .forms import BookForm  # ModelForm for add/edit books
 
 
 # --------------------------------------------------
-# Function-based view: list all books
+# Function-based view: List all books
 # --------------------------------------------------
 def list_books(request):
     books = Book.objects.all()
@@ -18,7 +18,7 @@ def list_books(request):
 
 
 # --------------------------------------------------
-# Class-based view: library details
+# Class-based view: Library details
 # --------------------------------------------------
 class LibraryDetailView(DetailView):
     model = Library
@@ -27,7 +27,7 @@ class LibraryDetailView(DetailView):
 
 
 # --------------------------------------------------
-# Registration view
+# User registration view
 # --------------------------------------------------
 def register(request):
     if request.method == 'POST':
@@ -38,12 +38,11 @@ def register(request):
             return redirect('list_books')
     else:
         form = UserCreationForm()
-
     return render(request, 'relationship_app/register.html', {'form': form})
 
 
 # --------------------------------------------------
-# Authentication views using built-in classes
+# Authentication views using Django built-ins
 # --------------------------------------------------
 class CustomLoginView(LoginView):
     template_name = 'relationship_app/login.html'
@@ -54,7 +53,7 @@ class CustomLogoutView(LogoutView):
 
 
 # --------------------------------------------------
-# Role check helpers (required for checker)
+# Role check helper functions
 # --------------------------------------------------
 def is_admin(user):
     return user.userprofile.role == 'Admin'
@@ -69,9 +68,9 @@ def is_member(user):
 
 
 # --------------------------------------------------
-# Role-based views (ALX checker compliant)
+# Role-based views
 # --------------------------------------------------
-# Checker requires lambda for Admin
+# Checker requires lambda for Admin view detection
 @user_passes_test(lambda u: u.userprofile.role == 'Admin')
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
@@ -87,15 +86,9 @@ def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
 
-
-from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Book
-from .forms import BookForm  # We’ll create a simple ModelForm
-
-# ----------------------------
-# Add Book (requires can_add_book)
-# ----------------------------
+# --------------------------------------------------
+# Book management views (permission-protected)
+# --------------------------------------------------
 @permission_required('relationship_app.can_add_book')
 def add_book(request):
     if request.method == 'POST':
@@ -108,9 +101,6 @@ def add_book(request):
     return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
 
 
-# ----------------------------
-# Edit Book (requires can_change_book)
-# ----------------------------
 @permission_required('relationship_app.can_change_book')
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
@@ -124,9 +114,6 @@ def edit_book(request, pk):
     return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Edit'})
 
 
-# ----------------------------
-# Delete Book (requires can_delete_book)
-# ----------------------------
 @permission_required('relationship_app.can_delete_book')
 def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
