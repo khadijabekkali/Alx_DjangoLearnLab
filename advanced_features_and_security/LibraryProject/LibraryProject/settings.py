@@ -153,3 +153,21 @@ CSP_DEFAULT_SRC = ("'self'",)
 CSP_STYLE_SRC = ("'self'", 'https://stackpath.bootstrapcdn.com')
 CSP_SCRIPT_SRC = ("'self'", 'https://code.jquery.com')
 
+# ===== SECURE HTTPS CONFIGURATION =====
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure cookies (only sent over HTTPS)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Additional browser security headers
+SECURE_BROWSER_XSS_FILTER = True   # Enable XSS filtering
+X_FRAME_OPTIONS = 'DENY'           # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True # Prevent MIME sniffing
