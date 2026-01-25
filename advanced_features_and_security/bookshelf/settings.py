@@ -11,6 +11,5 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
-# Media settings for profile photos
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
