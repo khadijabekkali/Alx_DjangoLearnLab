@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate, logout
-from .forms import UserRegisterForm, UserUpdateForm
+from django.contrib import messages
+from .forms import UserUpdateForm, UserRegisterForm
+from django.contrib.auth import login
 
 # Registration view
 def register_view(request):
@@ -10,15 +10,14 @@ def register_view(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
-            login(request, user)
+            login(request, user)  # auto login after registration
+            messages.success(request, 'Account created successfully!')
             return redirect('profile')
     else:
         form = UserRegisterForm()
     return render(request, 'blog/register.html', {'form': form})
 
-# Profile view
+# Profile view (POST supported)
 @login_required
 def profile_view(request):
     if request.method == 'POST':
