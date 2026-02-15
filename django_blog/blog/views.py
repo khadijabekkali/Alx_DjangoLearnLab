@@ -3,7 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Post, Comment
 from .forms import CommentForm
-
+from .models import Post
+from .forms import PostForm
 # Add a new comment (on Post detail page)
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
@@ -47,3 +48,34 @@ def search_view(request):
         Q(tags__name__icontains=query)
     ).distinct()
     return render(request, 'blog/search_results.html', {'query': query, 'results': results})
+
+# List all posts
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+
+    # Post detail
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+
+
+    # Create new post
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+
+    # Update post
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+
+    # Delete post
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = '/posts/'

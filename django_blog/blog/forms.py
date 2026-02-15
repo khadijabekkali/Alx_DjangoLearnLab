@@ -26,7 +26,7 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'tags']
         widgets = {
-            'tags': TagWidget(),  # shows tags as comma-separated input
+            'tags': TagWidget(),  # optional for tagging
         }
 class CommentForm(forms.ModelForm):
     class Meta:
