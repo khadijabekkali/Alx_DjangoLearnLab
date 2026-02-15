@@ -12,6 +12,11 @@
 
 {% block content %}
 {% endblock %}
+<form method="GET" action="{% url 'search' %}">
+    <input type="text" name="q" placeholder="Search posts..." required>
+    <button type="submit">Search</button>
+</form>
+
 
 <script src="{% static 'blog/script.js' %}"></script>
 

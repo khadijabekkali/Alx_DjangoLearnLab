@@ -3,20 +3,30 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    # Blog CRUD
+    # Posts CRUD
     path('posts/', views.PostListView.as_view(), name='post-list'),
     path('posts/new/', views.PostCreateView.as_view(), name='post-create'),
     path('posts/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
     path('posts/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post-update'),
     path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
-    # Comment CRUD URLs
-    path('posts/<int:post_pk>/comments/new/', views.CommentCreateView.as_view(), name='comment-create'),
-    path('comments/<int:pk>/edit/', views.CommentUpdateView.as_view(), name='comment-update'),
-    path('comments/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
+
+    # Comments CRUD (ALX expected URLs)
+    path('post/<int:pk>/comments/new/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # Authentication
     path('register/', views.register_view, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
     path('profile/', views.profile_view, name='profile'),
+    # Tag-based filtering
+    path('tags/<slug:tag_slug>/', views.TaggedPostListView.as_view(), name='tagged-posts'),
+
+    # Search
+    path('search/', views.search_view, name='search'),
 ]
+
+
+
+
